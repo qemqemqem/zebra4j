@@ -36,9 +36,10 @@ def main():
     parser = argparse.ArgumentParser(description="Generate zebra puzzles and save to JSONL file.")
     parser.add_argument("num_puzzles", type=int, help="Number of puzzles to generate")
     parser.add_argument("-p", "--people", type=int, default=4, help="Number of people in each puzzle (default: 4)")
+    parser.add_argument("-o", "--output", type=str, default="zebras.jsonl", help="Output file name (default: zebras.jsonl)")
     args = parser.parse_args()
 
-    with open("zebras.jsonl", "a") as f:
+    with open(args.output, "a") as f:
         for _ in tqdm(range(args.num_puzzles), desc="Generating puzzles", unit="puzzle"):
             puzzle = generate_puzzle(args.people)
             if puzzle:
@@ -47,7 +48,7 @@ def main():
             else:
                 print("Failed to generate a puzzle. Skipping.", file=sys.stderr)
 
-    print(f"Generated {args.num_puzzles} puzzles and saved to zebras.jsonl")
+    print(f"Generated {args.num_puzzles} puzzles and saved to {args.output}")
 
 if __name__ == "__main__":
     main()
