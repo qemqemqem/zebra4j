@@ -2,6 +2,7 @@ import argparse
 import json
 import subprocess
 import sys
+from tqdm import tqdm
 
 def generate_puzzle():
     cmd = ["/usr/bin/docker", "run", "--rm", "murfffi/zebracli", "generate", "-t", "QUESTION"]
@@ -37,7 +38,7 @@ def main():
     args = parser.parse_args()
 
     with open("zebras.jsonl", "a") as f:
-        for _ in range(args.num_puzzles):
+        for _ in tqdm(range(args.num_puzzles), desc="Generating puzzles", unit="puzzle"):
             puzzle = generate_puzzle()
             if puzzle:
                 json.dump(puzzle, f)
