@@ -4,8 +4,8 @@ import subprocess
 import sys
 from tqdm import tqdm
 
-def generate_puzzle():
-    cmd = ["/usr/bin/docker", "run", "--rm", "murfffi/zebracli", "generate", "-t", "QUESTION"]
+def generate_puzzle(people):
+    cmd = ["/usr/bin/docker", "run", "--rm", "murfffi/zebracli", "generate", "-t", "QUESTION", "-p", str(people)]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error generating puzzle: {result.stderr}", file=sys.stderr)
@@ -35,11 +35,12 @@ def generate_puzzle():
 def main():
     parser = argparse.ArgumentParser(description="Generate zebra puzzles and save to JSONL file.")
     parser.add_argument("num_puzzles", type=int, help="Number of puzzles to generate")
+    parser.add_argument("-p", "--people", type=int, default=4, help="Number of people in each puzzle (default: 4)")
     args = parser.parse_args()
 
     with open("zebras.jsonl", "a") as f:
         for _ in tqdm(range(args.num_puzzles), desc="Generating puzzles", unit="puzzle"):
-            puzzle = generate_puzzle()
+            puzzle = generate_puzzle(args.people)
             if puzzle:
                 json.dump(puzzle, f)
                 f.write('\n')
