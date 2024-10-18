@@ -33,7 +33,7 @@ def main():
     parser.add_argument("num_puzzles", type=int, help="Number of puzzles to generate")
     args = parser.parse_args()
 
-    with open("zebras.jsonl", "w") as f:
+    with open("zebras.jsonl", "a") as f:
         for _ in range(args.num_puzzles):
             puzzle = generate_puzzle()
             if puzzle:
