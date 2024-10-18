@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 def generate_puzzle():
-    cmd = ["/usr/bin/docker", "run", "--rm", "murfffi/zebracli", "generate", "-t", "BASIC"]
+    cmd = ["/usr/bin/docker", "run", "--rm", "murfffi/zebracli", "generate", "-t", "QUESTION"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error generating puzzle: {result.stderr}", file=sys.stderr)
@@ -18,12 +18,15 @@ def generate_puzzle():
         if line.startswith("Facts:"):
             current_section = "facts"
             puzzle_data[current_section] = []
-        elif line.startswith("Solution:"):
-            current_section = "solution"
-            puzzle_data[current_section] = []
+        elif line.startswith("Question:"):
+            puzzle_data["question"] = line.split("Question:")[1].strip()
+        elif line.startswith("Answer options:"):
+            puzzle_data["answer_options"] = line.split("Answer options:")[1].strip().split(", ")
+        elif line.startswith("Answer:"):
+            puzzle_data["answer"] = line.split("Answer:")[1].strip()
         elif line.startswith("Seed:"):
             puzzle_data["seed"] = int(line.split(":")[1].strip())
-        elif current_section and line.strip():
+        elif current_section == "facts" and line.strip():
             puzzle_data[current_section].append(line.strip())
 
     return puzzle_data
