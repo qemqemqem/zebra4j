@@ -13,3 +13,4 @@ buildNumber.properties
 /.factorypath
 docker/zebra4j
 .vscode/*.log
+.aider*
